@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYSTEM ACCESS // DAD EDITION</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .header {
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .status-badge {
+      background: #238636;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    h1 { font-size: 20px; color: #58a6ff; letter-spacing: 1px; }
+    .quiz-box { margin-bottom: 20px; }
+    .question { font-size: 16px; margin-bottom: 15px; color: #f0f6fc; }
+    .options { display: grid; gap: 10px; }
+    .btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 12px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+    .btn:hover { background: #30363d; border-color: #8b949e; }
+    .btn-action {
+      background: #238636;
+      color: white;
+      border: none;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+    }
+    .btn-action:hover { background: #2ea043; }
+    .progress-bar {
+      height: 6px;
+      background: #21262d;
+      border-radius: 3px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+    .progress { height: 100%; background: #58a6ff; width: 0%; transition: width 0.4s; }
+    .final-screen { display: none; text-align: center; }
+    .final-screen h2 { color: #3fb950; margin-bottom: 15px; }
+    .coupon {
+      background: #0d1117;
+      border: 1px dashed #58a6ff;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>DAD_SYSTEM_v2026</h1>
+    <span class="status-badge" id="status">SECURITY CHECK</span>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
+  </div>
+
+  <div id="game-stage">
+    <div class="quiz-box">
+      <div class="question" id="question-text">Загрузка вопроса...</div>
+      <div class="options" id="options-container"></div>
+    </div>
+  </div>
+
+  <div class="final-screen" id="final-stage">
+    <h2>[ ACCESS GRANTED ]</h2>
+    <p style="margin-bottom: 20px; font-size: 16px; line-height: 1.5;">
+      С Днём Рождения, Папа! 🎉<br>
+      Спасибо за твою поддержку, надёжность и крутость. Ты лучший!
+    </p>
+
+    <h3 style="color: #58a6ff; margin-bottom: 10px; font-size: 14px;">ДОСТУПНЫЕ БОНУСЫ (COUPONS):</h3>
+    <div class="coupon">🎟️ <b>Купон:</b> Вечер без споров и лишних вопросов</div>
+    <div class="coupon">🛠️ <b>Купон:</b> Помощь с любыми делами по дому / гаражу</div>
+    <div class="coupon">🍕 <b>Купон:</b> Выбор любого фильма / еды на вечер</div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "Вопрос 1: Кто является самым главным экспертом и главой семьи?",
+      options: ["Google", "Папа", "ИИ-системы", "Википедия"],
+      correct: 1
+    },
+    {
+      q: "Вопрос 2: Какая главная суперсила у нашего именинника?",
+      options: ["Решать любые проблемы", "Терпение 100 уровня", "Крутое чувство юмора", "Всё вышеперечисленное"],
+      correct: 3
+    },
+    {
+      q: "Вопрос 3: Подтвердите статус 'Лучший Отец Года':",
+      options: ["Подтверждаю на 100%", "Абсолютно точно"],
+      correct: 0
+    }
+  ];
+
+  let currentQ = 0;
+function loadQuestion() {
+    const qData = questions[currentQ];
+    document.getElementById('question-text').innerText = qData.q;
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+
+    qData.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.innerText = opt;
+      btn.onclick = () => selectAnswer(idx);
+      container.appendChild(btn);
+    });
+
+    // Обновляем progress
+    const percent = (currentQ / questions.length) * 100;
+    document.getElementById('progress').style.width = percent + '%';
+  }
+
+  function selectAnswer(idx) {
+    // В этой мини-игре любой выбор ведет к успеху
+    currentQ++;
+    if (currentQ < questions.length) {
+      loadQuestion();
+    } else {
+      showFinal();
+    }
+  }
+
+  function showFinal() {
+    document.getElementById('progress').style.width = '100%';
+    document.getElementById('game-stage').style.display = 'none';
+    document.getElementById('final-stage').style.display = 'block';
+    document.getElementById('status').innerText = 'AUTHORIZED';
+    document.getElementById('status').style.background = '#3fb950';
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
