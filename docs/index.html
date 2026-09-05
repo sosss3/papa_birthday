@@ -16,10 +16,9 @@
       align-items: center;
       min-height: 100vh;
       padding: 20px;
-      overflow: hidden; /* Скрываем прокрутку для Canvas */
+      overflow: hidden;
     }
 
-    /* Фон с эффектом Digital Rain */
     #bg-canvas {
       position: fixed;
       top: 0;
@@ -31,14 +30,13 @@
     }
 
     .container {
-      background: rgba(22, 27, 34, 0.9);
+      background: rgba(22, 27, 34, 0.95);
       border: 2px solid #30363d;
-      border-radius: 4px;
+      border-radius: 6px;
       width: 100%;
       max-width: 650px;
       padding: 30px;
-      box-shadow: 0 0 20px rgba(63, 185, 80, 0.3);
-      position: relative;
+      box-shadow: 0 0 25px rgba(63, 185, 80, 0.25);
     }
 
     .header {
@@ -63,7 +61,7 @@
     h1 { font-size: 20px; color: #58a6ff; letter-spacing: 2px; font-weight: bold;}
     
     .quiz-box { margin-bottom: 20px; }
-    .question { font-size: 16px; margin-bottom: 15px; color: #f0f6fc; text-shadow: 0 0 5px rgba(240, 246, 252, 0.5); }
+    .question { font-size: 16px; margin-bottom: 15px; color: #f0f6fc; }
     .options { display: grid; gap: 10px; }
     
     .btn {
@@ -87,28 +85,34 @@
       text-align: center;
       margin-top: 15px;
       text-transform: uppercase;
+      width: 100%;
     }
     .btn-action:hover { background: #2ea043; }
     
     .progress-bar {
-      height: 10px;
+      height: 8px;
       background: #21262d;
       border: 1px solid #30363d;
       margin-bottom: 25px;
       overflow: hidden;
     }
-    .progress { height: 100%; background: #58a6ff; width: 0%; transition: width 0.4s; box-shadow: 0 0 10px rgba(88, 166, 255, 0.7); }
+    .progress { height: 100%; background: #58a6ff; width: 0%; transition: width 0.4s; }
     
-    .final-screen, .secret-screen { display: none; text-align: center; }
-    .final-screen h2, .secret-screen h2 { color: #3fb950; margin-bottom: 15px; text-shadow: 0 0 10px rgba(63, 185, 80, 0.7); }
+    .final-screen, .secret-screen, #reward-stage { display: none; text-align: center; }
     
-    .coupon {
-      background: transparent;
-      border: 1px solid #58a6ff;
-      padding: 15px;
-      margin: 10px 0;
+    .cert-card {
+      border: 2px solid #58a6ff;
+      background: #0d1117;
+      padding: 20px;
       border-radius: 4px;
+      margin-top: 15px;
+      text-align: left;
+      box-shadow: inset 0 0 10px rgba(88, 166, 255, 0.1);
     }
+
+    .cert-title { color: #58a6ff; font-size: 18px; text-align: center; margin-bottom: 15px; font-weight: bold; }
+    .cert-line { color: #c9d1d9; font-size: 14px; margin-bottom: 8px; }
+
     .terminal-input {
       background: transparent;
       border: 1px solid #30363d;
@@ -117,6 +121,7 @@
       font-family: 'Courier New', Courier, monospace;
       width: 100%;
       margin-bottom: 10px;
+      text-align: center;
     }
   </style>
 </head>
@@ -136,90 +141,72 @@
 
   <div id="game-stage">
     <div class="quiz-box">
-      <div class="question" id="question-text">Загрузка протокола безопасности...</div>
-      <div class="options" id="options-container"></div>
-    </div>
-  </div>
-
-  <div class="final-screen" id="final-stage">
-    <h2>[ ACCESS GRANTED ]</h2>
-    <p style="margin-bottom: 20px; font-size: 16px; line-height: 1.5;">
-      Проверка личности завершена.<br>
-      Протокол "HAPPY_BIRTHDAY" активирован.<br><br>
-      Система готова к выдаче бонусов.
+      <div class="question" id="question-text">Загрузка протокола...</div>
+      <div class="options" id="options-<p style="margin-bottom: 20px; font-size: 15px; color: #c9d1d9;">
+      Идентификация успешна. Требуется финальный ключ подлинности.
     </p>
-    
-    <button class="btn btn-action" onclick="toggleSecret()" id="secret-btn">Ввести секретный код доступа</button>
+    <button class="btn btn-action" onclick="toggleSecret()">Ввести секретный код</button>
   </div>
   
   <div class="secret-screen" id="secret-stage">
-    <h2>Введите Код Подтверждения</h2>
-    <input type="text" class="terminal-input" id="secret-code" placeholder="Введите код...">
-    <button class="btn btn-action" onclick="checkCode()">Проверить Код</button>
+    <h2 style="color: #58a6ff; margin-bottom: 15px;">СЕКРЕТНЫЙ ТЕРМИНАЛ</h2>
+    <input type="text" class="terminal-input" id="secret-code" placeholder="Введи PAPA100">
+    <button class="btn btn-action" onclick="checkCode()">Активировать</button>
   </div>
   
-  <div id="coupons-stage" style="display:none; text-align: center;">
-    <h2>[ БОНУСЫ РАЗБЛОКИРОВАНЫ ]</h2>
-    <h3 style="color: #58a6ff; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">Авторизованные Купоны:</h3>
-    <div class="coupon">🎟️ <b>Тикет #001:</b> Полный вечер без споров и лишних вопросов</div>
-    <div class="coupon">🎮 <b>Тикет #002:</b> Выбор любого контента (фильм/игра) на весь вечер</div>
-    <div class="coupon">🛠️ <b>Тикет #003:</b> Помощь по выбору</div>
+  <div id="reward-stage">
+    <div class="cert-card">
+      <div class="cert-title">🎖️ СЕРТИФИКАТ ВЫСШЕГО СТАТУСА 🎖️</div>
+      <div class="cert-line"><b>ОБЛАДАТЕЛЬ:</b> Лучший Отец</div>
+      <div class="cert-line"><b>СТАТУС:</b> Абсолютный Авторитет & Надежность 100%</div>
+      <div class="cert-line"><b>ИДЕНТИФИКАТОР:</b> #DAD-BEST-2026</div>
+      <hr style="border-color: #30363d; margin: 12px 0;">
+      <p style="color: #3fb950; font-size: 14px; line-height: 1.6; text-align: center;">
+        Папа, с Днём Рождения! 🎉<br>
+        Спасибо за твою силу, поддержку и за всё, что ты делаешь для семьи. Желаем крепительного здоровья, железобетонных нервов и крутого настроения каждый день!
+      </p>
+    </div>
   </div>
 </div>
 
 <script>
-  // Canvas эффект: Digital Rain
+  // Background Matrix Effect
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
-
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
-
-  const characters = '0123456789ABCDEF@#$%^&*()_+=/[]{}<>|';
+  const characters = '0123456789ABCDEF@#$%^&*()';
   const fontSize = 16;
   const columns = canvas.width / fontSize;
-  const drops = [];
-
-  for (let x = 0; x < columns; x++) {
-    drops[x] = 1;
-  }
+  const drops = Array(Math.floor(columns)).fill(1);
 
   function drawRain() {
     ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = '#3fb950';
     ctx.font = fontSize + 'px Courier New';
-
     for (let i = 0; i < drops.length; i++) {
       const text = characters.charAt(Math.floor(Math.random() * characters.length));
       ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
       drops[i]++;
     }
   }
-
   setInterval(drawRain, 30);
 
-  // Звуковые эффекты (нужно подставить ссылки на реальные звуки или использовать синтез)
+  // Audio Effects
   const successAudio = new Audio('https://www.soundjay.com/buttons/button-4.mp3');
   const errorAudio = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
-  const finalAudio = new Audio('https://www.soundjay.com/buttons/button-3.mp3');
 
-
-  // Игра / Квиз
   const questions = [
     {
-      q: "Вопрос 1: Какова главная функция системы DAD_SYSTEM_v2026?",
-      options: ["Радовать окружающих", "Быть самым крутым", "Решать любые проблемы", "Все ответы верны"],
+      q: "Вопрос 1: Какова главная задача DAD_SYSTEM?",
+      options: ["Быть самым крутым", "Решать любые задачи", "Поддерживать семейный уют", "Все варианты верны"],
       correct: 3
     },
     {
-      q: "Вопрос 2: Какой уровень доступа имеет именинник?",
-      options: ["Администратор (ROOT)", "Гость", "Пользователь", "Заблокирован"],
+      q: "Вопрос 2: Уровень авторитета именинника?",
+      options: ["Максимальный (ROOT)", "Ограниченный"],
       correct: 0
     }
   ];
@@ -231,40 +218,37 @@
     document.getElementById('question-text').innerText = qData.q;
     const container = document.getElementById('options-container');
     container.innerHTML = '';
-
     qData.options.forEach((opt, idx) => {
       const btn = document.createElement('button');
       btn.className = 'btn';
       btn.innerText = opt;
-      btn.onclick = () => selectAnswer(idx);
+      btn.onclick = () => selectAnswer();
       container.appendChild(btn);
     });
-
-    const percent = (currentQ / questions.length) * 100;
-    document.getElementById('progress').style.width = percent + '%';
+    document.getElementById('progress').style.width = ((currentQ / questions.length) * 100) + '%';
   }
 
-  function selectAnswer(idx) {
+  function selectAnswer() {
     successAudio.play();
     currentQ++;
-    if (currentQ < questions.length) {
-      loadQuestion();
-    } else {
-      showFinal();
-    }
+    if (currentQ < questions.length) loadQuestion();
+    else showFinal();
   }
 
   function showFinal() {
-    finalAudio.play();
     document.getElementById('progress').style.width = '100%';
     document.getElementById('game-stage').style.display = 'none';
     document.getElementById('final-stage').style.display = 'block';
     document.getElementById('status').innerText = 'SECURE';
-    document.getElementById('status').style.background = '#2ea043';
   }
   
-  // Секретный экран
-  function toggleSecret() {
+  function toggleSecret() {"></div>
+    
+    </div>
+  </div>
+
+  <div class="final-screen" id="final-stage">
+    <h2 style="color: #3fb950; margin-bottom: 10px;">[ ACCESS GRANTED ]</h2>
     document.getElementById('final-stage').style.display = 'none';
     document.getElementById('secret-stage').style.display = 'block';
   }
@@ -274,12 +258,12 @@
     if (code === 'PAPA100' || code === 'ПАПА100') {
       successAudio.play();
       document.getElementById('secret-stage').style.display = 'none';
-      document.getElementById('coupons-stage').style.display = 'block';
-      document.getElementById('status').innerText = 'COUPONS GRANTED';
-      document.getElementById('status').style.background = '#3fb950';
+      document.getElementById('reward-stage').style.display = 'block';
+      document.getElementById('status').innerText = 'VIP VERIFIED';
+      document.getElementById('status').style.background = '#58a6ff';
     } else {
       errorAudio.play();
-      alert('СЕКРЕТНЫЙ КОД НЕВЕРЕН. ДОСТУП ОТКЛОНЕН.');
+      alert('НЕВЕРНЫЙ КЛЮЧ.');
     }
   }
 
