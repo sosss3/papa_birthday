@@ -142,7 +142,13 @@
   <div id="game-stage">
     <div class="quiz-box">
       <div class="question" id="question-text">Загрузка протокола...</div>
-      <div class="options" id="options-<p style="margin-bottom: 20px; font-size: 15px; color: #c9d1d9;">
+      <div class="options" id="options-container"></div>
+    </div>
+  </div>
+
+  <div class="final-screen" id="final-stage">
+    <h2 style="color: #3fb950; margin-bottom: 10px;">[ ACCESS GRANTED ]</h2>
+<p style="margin-bottom: 20px; font-size: 15px; color: #c9d1d9;">
       Идентификация успешна. Требуется финальный ключ подлинности.
     </p>
     <button class="btn btn-action" onclick="toggleSecret()">Ввести секретный код</button>
@@ -242,14 +248,8 @@
     document.getElementById('status').innerText = 'SECURE';
   }
   
-  function toggleSecret() {"></div>
-    
-    </div>
-  </div>
-
-  <div class="final-screen" id="final-stage">
-    <h2 style="color: #3fb950; margin-bottom: 10px;">[ ACCESS GRANTED ]</h2>
-    document.getElementById('final-stage').style.display = 'none';
+  function toggleSecret() {
+[9/5/2026 16:11] lo: document.getElementById('final-stage').style.display = 'none';
     document.getElementById('secret-stage').style.display = 'block';
   }
   
